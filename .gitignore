@@ -3,6 +3,7 @@ env
 .Python
 include
 lib
+virt
 
 # Python Packages
 *.egg
@@ -32,3 +33,6 @@ pip-log.txt
 *.[oa]
 *.py[co]
 *.rbc
+
+# sqllite db
+*.sql
