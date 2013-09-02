@@ -25,6 +25,6 @@ class FoodTruck(Base):
         return {
                 'name': self.name,
                 'latitude': format(self.lat, '.5f'),
-                'longitude': format(self.lng, '.5f')
-
+                'longitude': format(self.lng, '.5f'),
+                'fooditems': self.fooditems
                 }

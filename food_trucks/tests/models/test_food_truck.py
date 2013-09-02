@@ -25,7 +25,7 @@ class TestFoodTruckModel(unittest.TestCase):
 
     def test_basic(self):
         nicks_tacos = FoodTruck('Nicks Tacos', 45.78985, 34.78998)
-
+        nicks_tacos.fooditems = 'Tacos'
         self.db_session.add(nicks_tacos)
         self.db_session.commit()
 
@@ -34,7 +34,7 @@ class TestFoodTruckModel(unittest.TestCase):
         self.assertEquals(len(results), 1)
         self.assertEquals(results[0].__repr__(), u'<Truck: Nicks Tacos, Lat: 45.789850, Lng: 34.789980>')
 
-        self.assertEquals(results[0]._serialise(), {'latitude': '45.78985', 'longitude': '34.78998', 'name': u'Nicks Tacos'})
+        self.assertEquals(results[0]._serialise(), {'latitude': '45.78985', 'longitude': '34.78998', 'name': u'Nicks Tacos', u'fooditems': 'Tacos'})
 
 
 

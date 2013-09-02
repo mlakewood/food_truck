@@ -13,10 +13,12 @@ from flask import Flask, render_template, request, redirect, url_for
 from food_trucks import my_app
 
 from food_trucks.models.food_truck import FoodTruck
-from food_trucks.resources.food_trucks import FoodTruckAPI
+from food_trucks.resources.food_trucks_view import FoodTruckAPI
 
 def define_urls(app):
-    app.add_url_rule('/food_trucks', view_func=FoodTruckAPI.as_view('food_trucks'))
+    food_truck = FoodTruckAPI.as_view('food_trucks')
+    app.add_url_rule('/food_trucks', view_func=food_truck, methods=['GET',])
+    app.add_url_rule('/food_trucks/<int:truck_id>', view_func=food_truck, methods=['GET',])
 
 @my_app.teardown_appcontext
 def shutdown_session(exception=None):
