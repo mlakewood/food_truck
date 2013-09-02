@@ -6,7 +6,6 @@ var mapsView = Backbone.View.extend({
 
     refreshCollection: function(center, distance){
         console.log('refresh collection');
-        current_location = center.ob + ',' + center.pb
         
         this.deleteOverlays();
         this.collection.once('sync', this.renderFoodTrucks);
@@ -48,22 +47,23 @@ var mapsView = Backbone.View.extend({
 
     renderFoodTrucks: function(){
         for(var i= 0; i < this.collection.length; i++){
-            this.addPoint(this.collection.models[i].get('latitude'), 
-                          this.collection.models[i].get('longitude'),
-                          this.collection.models[i].get('name'));
+            this.addPoint(this.collection.models[i]);
         }
     },
 
-    addPoint: function(lat, lng, name){
-        var myLatlng = new google.maps.LatLng(lat, lng);
+    addPoint: function(model){
+        if(model !== undefined){
+            var myLatlng = new google.maps.LatLng(model.get('latitude'), model.get('longitude'));
 
-        var marker = new google.maps.Marker({
-            position: myLatlng,
-            title: name,
-        });
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                title: model.get('name'),
+            });
 
-        marker.setMap(this.map);
-        this.markersArray.push(marker)
+            marker.setMap(this.map);
+            this.markersArray.push(marker) 
+        }
+
     },
 
     // Deletes all markers in the array by removing references to them
@@ -159,6 +159,31 @@ var mapsView = Backbone.View.extend({
         google.maps.event.addDomListener(controlUIFiveMile, 'click', function() {
           self.refreshCollection(self.map.getCenter(),5);
         });
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = 'white';
+        controlUI.style.borderStyle = 'solid';
+        controlUI.style.borderWidth = '2px';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to include all food vans';
+        controlUI.id = 'all';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.fontFamily = 'Arial,sans-serif';
+        controlText.style.fontSize = '12px';
+        controlText.style.paddingLeft = '4px';
+        controlText.style.paddingRight = '4px';
+        controlText.innerHTML = '<strong>All</strong>';
+        controlUI.appendChild(controlText);
+
+        google.maps.event.addDomListener(controlUI, 'click', function() {
+          self.refreshCollection();
+        });
+
         return controlDiv;
     }
 
