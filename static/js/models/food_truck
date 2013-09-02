@@ -1,3 +1,0 @@
-var food_truck = Backbone.Models.extend({
-    
-});
