@@ -9,9 +9,9 @@ This is a coding challenge answer for Uber. I chose the Food trucks challenge fo
 I've deployed this solution to heroku which can be found here:
     http://aqueous-citadel-9608.herokuapp.com/
 
-I chose to use heroku, flask, SQLAlchemy, backbone.js and google maps api v3.
+I chose to use heroku, flask, SQLAlchemy, backbone.js and the google maps api v3.
 
-Only Backbone.js have I used inside a working environment, the others though I have played with them, but not in a production environment.
+I have only used Backbone.js in a production environment, although I have played around with the others in a non-production environment.
 
 
 Restful Flask
@@ -25,9 +25,9 @@ The database can be created using the create_db python script like so:
 The data for the trucks can be then loaded into the database using the load_data.py script like so:
     $ python load_data.py
 
-This script will remove all rows from the sqlite database, download the data from https://data.sfgov.org/Permitting/Mobile-Food-Facility-Permit/rqzj-sfat and then load that data into the database.
+This script will remove all current rows from the sqlite database, download the data from https://data.sfgov.org/Permitting/Mobile-Food-Facility-Permit/rqzj-sfat and then load that data into the database.
 
-Tests for the api can be run by:
+Tests for the api can be run by excuting:
     $ python -m 'unittest' discover -vf
 
 This is the report from coverage:
@@ -56,16 +56,16 @@ TOTAL                                            216      2    99%
 
 The pyflakes log can be found in pyflakes.log. I normally use pylint, but I decided to try out pyflakes
 this time around. I think overall in production code I would use pylint, as I think it checks many more
-code attributes, and therefore can enforce them. 
+code attributes, and therefore as a team you can enforce them. 
 
-The service can be run by running:
+The service can be run by executing:
     $ python food_trucks/runserver.py
 
 
 Backbone.js
 -----------
 
-The Javascript side of things can be found in static/js. There is an app.js that starts everything and
+The Javascript side of things can be found in static/js. There is an app.js that contains the router. And
 really only one view, the maps_views.js that renders the google map, and places the markers for the trucks.
 
 This all works pretty well, as its a very small backbone.js app. I havent really worried to much about cleaning up memory at this point, as 
@@ -92,9 +92,13 @@ Backbone.js:
             3. Rendering the distance buttons on the side.
        These seem like jobs that should go in different views, but at this point it was easier to put it all in one view.
 
+    2) It would be nice to have some extra information about what the food truck is. At the moment there is a tool tip for the name, that comes up if you hover over the marker. This is a minor addition, as we have the information we just need to surface it. But I decided that it was out of scope for a prototype, as normally a prototype is about fleshing out the big parts of 'how this is going to get done, and can we do it?', and it seemed that it wasnt essential in answering that question.
+
+    3) Memory is a constant issue with client side single page apps. Mainly because we as developers are unused to caring about memory in HTML and javascript. Correct disposal of events, views, models and collections so that they can be garbage collected is critical in large single page applications. As mentioned above, I havent really worried about this as there arent really any transitions as such and we are working with not much data.
+
 Timings:
 
-    So it took quite a bit longer than the 4-5 hours suggested in the challenge. When looking at the challenge initially I didnt think the timeframe was realistic for myself. Due to having to standup an unfamiliar stack (although small) from scratch, an issues encountered along the way, its taken me probably 2 days elapsed time, but a day and a half actual time. This was about how long I estimated it would take me. So I believe that although I'm not in line with the estimate in the challenge I am accurate in estimating my own timeframes.
+    So it took quite a bit longer than the 4-5 hours suggested in the challenge. When looking at the challenge initially I didnt think the timeframe was realistic for myself. Due to having to standup an unfamiliar stack (although small) from scratch, and issues encountered along the way, its taken me probably 2 days elapsed time, but a day and a half actual time. This was about how long I estimated it would take me. So I believe that although I'm not in line with the estimate in the challenge I am accurate in estimating my own timeframes.
 
 
 
