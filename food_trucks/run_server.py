@@ -7,6 +7,7 @@ def run_server():
     engine = get_engine('sqlite:///food_truck.sql')
     my_app.config['DB_SESSION'] = get_db_session(engine)
     define_urls(my_app)
+    my_app.debug = True
     return my_app
 
 if __name__ == '__main__':
