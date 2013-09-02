@@ -35,4 +35,4 @@ pip-log.txt
 *.rbc
 
 # sqllite db
-*.sql
+
