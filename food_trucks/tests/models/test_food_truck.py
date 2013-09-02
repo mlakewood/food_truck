@@ -2,10 +2,7 @@
 
 import unittest
 import os
-import inspect
-import tempfile
 
-from food_trucks.app import my_app
 from food_trucks.db import get_engine, init_db, get_db_session, Base
 from food_trucks.models.food_truck import FoodTruck
 

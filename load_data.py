@@ -2,17 +2,22 @@
 from io import StringIO
 import json
 import flask_sqlalchemy
+import requests
 
 from food_trucks.db import get_engine, get_db_session
 from food_trucks.models.food_truck import FoodTruck
 
 if __name__ == '__main__':
-    fp = open('trucks.json', 'r')
-    trucks = StringIO()
+    truck_request = requests.get('http://data.sfgov.org/resource/rqzj-sfat.json')
 
-    truck_list = json.loads(fp.read())
+    if truck_request.status_code != 200:
+        raise Exception("Error getting data. Status code: %s, Message: %s" % truck_request.status, truck_request.data)
+
+    truck_list = json.loads(truck_request.content)
     engine = get_engine('sqlite:///food_truck.sql')
     session = get_db_session(engine)
+
+    session.query(FoodTruck).delete()
 
     for t in truck_list:
         print t['applicant']

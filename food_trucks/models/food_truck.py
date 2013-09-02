@@ -1,4 +1,4 @@
-from flask import Flask
+
 from sqlalchemy import Column, Integer, String, Float
 
 from food_trucks.db import Base

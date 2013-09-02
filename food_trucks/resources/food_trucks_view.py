@@ -1,4 +1,3 @@
-import json
 from math import radians, cos, sin, asin, sqrt
 
 from flask import request

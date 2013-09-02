@@ -7,12 +7,10 @@ This flask app exposes some restful api endpoints for food truck discovery.
 
 """
 
-import os
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import render_template, send_from_directory
 
 from food_trucks import my_app
 
-from food_trucks.models.food_truck import FoodTruck
 from food_trucks.resources.food_trucks_view import FoodTruckAPI
 
 def define_urls(app):

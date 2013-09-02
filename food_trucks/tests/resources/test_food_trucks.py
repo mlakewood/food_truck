@@ -3,8 +3,7 @@
 import unittest
 import json
 import os
-import inspect
-import tempfile
+
 
 from food_trucks.app import my_app, define_urls
 from food_trucks.db import get_engine, init_db, get_db_session, Base
@@ -73,13 +72,20 @@ class TestFoodTruckGET(unittest.TestCase):
                         }
         self.assertEquals(json.loads(res.data), expected_data)
 
-    def test_raise_204(self):
+    def test_raise_204_multiple(self):
 
         res = self.app.get('/food_trucks')
         self.assertEquals(res.status, '204 NO CONTENT')
 
         self.assertEquals(res.data, '')
 
+
+    def test_raise_204_single(self):
+
+        res = self.app.get('/food_trucks/42')
+        self.assertEquals(res.status, '204 NO CONTENT')
+
+        self.assertEquals(res.data, '')
 
     def test_distance(self):
         nicks_tacos = FoodTruck('Nicks Tacos', 45.78985, 34.78998)

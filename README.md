@@ -1,223 +1,100 @@
-Flask Heroku
-============
-
-<pre><code>
-
-
-             ##
- #########  ###
-  ##     #   ##                     :GG   DG
-  ##         ##                     :EE   EE                        ;E
-  ##         ##                     :EE  KK                         ;E
-  ##         ##                     :EE                             ;E
-  ##   #     ##     ####     ####   :EEEEEEG   KEEEE     WE  WEEE;  ;E   EE EE   EE  
-  ######     ##    ##  #f   #   #   :EE   EE  GEf;tEK  EEKK EEfiEE, ;E  fE  EE   EE  
-  ##   #     ##        #l   ##            EE  KE   tE  EK   E;   EE ;E  E,  EE   EE  
-  ##         ##       ##a    ###          EK  EEEEEEE  EK   E    KE ;EEEE   EE   EE  
-  ##         ##    ##  #s     ###         EK  EE       EK   E    KE ;E EE   EE   EE  
-  ##         ##   ##   #k       ##   E    EE  EE       EK   E,   EK ;E  KE  EE   EE  
-  ##         ##   ##   ##W  #   #:   E    EK  ;EK.,EK  EK   EE,:EE, ;E   ED KE.,EEE  
- #####      #####  ### W#   ####,         EK   ,KEEE   K#    DEEK.  iK   WK  KEEE.   
-
-
-                    github.com/zachwill/flask_heroku
-
-</code></pre>
+Food Trucks for Uber: Mark Lakewood
 
 
 What is this?
 -------------
 
-A template to get your [Flask](http://flask.pocoo.org/) app running on
-[Heroku](https://www.heroku.com/) as fast as possible. For added
-convenience, the templates use [Twitter's Bootstrap
-project](http://twitter.github.com/bootstrap/) to help reduce the amount
-of time it's takes you as a developer to go from an idea to a working
-site.
+This is a coding challenge answer for Uber. I chose the Food trucks challenge found here:
+    https://github.com/uber/coding-challenge-tools.
+I've deployed this solution to heroku which can be found here:
+    http://aqueous-citadel-9608.herokuapp.com/
 
-All of the CSS stylesheets are written using the [Less
-CSS](http://lesscss.org/) syntax (even Bootstrap's CSS). If you're using
-Mac OS X for development, make sure to check out [incident57's
-Less.app](http://incident57.com/less/).
+I chose to use heroku, flask, SQLAlchemy, backbone.js and google maps api v3.
 
-Alternatively, there's a [Less binary
-compiler](https://github.com/cloudhead/less.js/) that works similarly on
-the commandline, or you can always use the [`less.js`
-script](https://github.com/cloudhead/less.js/) in your website otherwise
--- it's incredibly fast. For instance, if you visit the [Less CSS
-site](http://lesscss.org), notice that it doesn't link to any CSS files.
+Only Backbone.js have I used inside a working environment, the others though I have played with them, but not in a production environment.
 
-Lastly, in Heroku's production environment, your Flask application will
-be served through [`gunicorn`](http://gunicorn.org/) and
-[`gevent`](http://www.gevent.org/).
 
+Restful Flask
+-------------
 
-Why should I use this?
-----------------------
+The backend restful api has been built in flask, using SQLAlchemy as the ORM and sqlite as the database.
 
-Everything I've learned from writing and maintaining the [Flask
-Engine](https://github.com/zachwill/flask-engine) template for Google
-App Engine has made its way into this repo, too. The goal is to make a
-simple repo that can be cloned and added to for the majority of projects
-going forward, while also staying minimal in size and complexity.
+The database can be created using the create_db python script like so:
+    $ python create_db.py
 
+The data for the trucks can be then loaded into the database using the load_data.py script like so:
+    $ python load_data.py
 
-Instructions
-------------
+This script will remove all rows from the sqlite database, download the data from https://data.sfgov.org/Permitting/Mobile-Food-Facility-Permit/rqzj-sfat and then load that data into the database.
 
-First, you'll need to clone the repo.
+Tests for the api can be run by:
+    $ python -m 'unittest' discover -vf
 
-    $ git clone git@github.com:zachwill/flask_heroku.git
-    $ cd flask_heroku
+This is the report from coverage:
 
-Second, let's download `pip`, `virtualenv`, `foreman`, and the [`heroku`
-Ruby gem](http://devcenter.heroku.com/articles/using-the-cli).
+    $coverage run --include=food_trucks/* -m  'unittest' discover -vf
 
-    $ sudo easy_install pip
-    $ sudo pip install virtualenv
-    $ sudo gem install foreman heroku
+    $ coverage report -m
+Name                                           Stmts   Miss  Cover   Missing
+----------------------------------------------------------------------------
+food_trucks/__init__                               2      0   100%
+food_trucks/app                                   18      2    89%   34, 38
+food_trucks/db                                    12      0   100%
+food_trucks/exceptions                            18      0   100%
+food_trucks/models/__init__                        0      0   100%
+food_trucks/models/food_truck                     22      0   100%
+food_trucks/resources/__init__                     0      0   100%
+food_trucks/resources/base_resource               12      0   100%
+food_trucks/resources/food_trucks_view            39      0   100%
+food_trucks/tests/__init__                         0      0   100%
+food_trucks/tests/models/__init__                  0      0   100%
+food_trucks/tests/models/test_food_truck          25      0   100%
+food_trucks/tests/resources/__init__               0      0   100%
+food_trucks/tests/resources/test_food_trucks      68      0   100%
+----------------------------------------------------------------------------
+TOTAL                                            216      2    99%
 
-Now, you can setup an isolated environment with `virtualenv`.
+The pyflakes log can be found in pyflakes.log. I normally use pylint, but I decided to try out pyflakes
+this time around. I think overall in production code I would use pylint, as I think it checks many more
+code attributes, and therefore can enforce them. 
 
-    $ virtualenv --no-site-packages env
-    $ source env/bin/activate
+The service can be run by running:
+    $ python food_trucks/runserver.py
 
 
-Installing Packages
---------------------
+Backbone.js
+-----------
 
-### Gevent
+The Javascript side of things can be found in static/js. There is an app.js that starts everything and
+really only one view, the maps_views.js that renders the google map, and places the markers for the trucks.
 
-To use `gevent`, we'll need to install `libevent` for the
-`gevent` production server. If you're operating on a Linux OS, you can
-`apt-get install libevent-dev`. If you're using Mac OS X, consider
-installing the [homebrew](http://mxcl.github.com/homebrew/) package
-manager, and run the following command:
+This all works pretty well, as its a very small backbone.js app. I havent really worried to much about cleaning up memory at this point, as 
 
-    $ brew install libevent
+1) Its a prototype and so needs to be polished.
+2) Its quite small so doesnt take up much memory in the first place.
 
-If you're using Mac OS X, you can also install `libevent` through [a DMG
-available on Rudix](http://rudix.org/packages-jkl.html#libevent).
+Issues, things that could be done better
+----------------------------------------
 
+Flask:
 
-### Without Gevent
+    1) As I havent used Flask in a production environment I had to spend quite a bit of time getting it to work. As I chose a much more modular approach to setting out the service, I had a few issues laying out where things needed to go. I'm still not totally happy with the configuration with regards to the db.py, app.py and run_server.py. Specifically im not happy with the lack of external configuration file (ie like a settings.py file or someother format), and due to the way run_server.py is written, Heroku runs the Procfile fine in production but foreman has issues with it. So I feel that the base level of the stack needs some work.
 
-If you'd rather use `gunicorn` without `gevent`, you just need to edit
-the `Procfile` and `requirements.txt`.
+    2) I did have an issue with a module stomping on my main package due to a naming clash that had me stumped for a while, which slowed me down quite a bit. But its not something I have come across before, but will be something I remember for quite a while.
 
-First, edit the `Procfile` to look the following:
+    3) At the moment the loading of the data is a batch job. This could be improved to just proxy the source data, but as the data doesnt change that much, I think the load_data.py could for example be put in a cron job.
 
-    web: gunicorn -w 4 -b "0.0.0.0:$PORT" app:app
+Backbone.js:
+    
+    1) The maps_view.js file might need to be broken up. The view itself is doing three seperate things. 
+            1. Rendering the google maps
+            2. Rendering the overlays
+            3. Rendering the distance buttons on the side.
+       These seem like jobs that should go in different views, but at this point it was easier to put it all in one view.
 
-Second, remove `gevent` from the `requirements.txt` file.
+Timings:
 
-### pip
+    So it took quite a bit longer than the 4-5 hours suggested in the challenge. When looking at the challenge initially I didnt think the timeframe was realistic for myself. Due to having to standup an unfamiliar stack (although small) from scratch, an issues encountered along the way, its taken me probably 2 days elapsed time, but a day and a half actual time. This was about how long I estimated it would take me. So I believe that although I'm not in line with the estimate in the challenge I am accurate in estimating my own timeframes.
 
-Then, let's get the requirements installed in your isolated test
-environment.
 
-    $ pip install -r requirements.txt
 
-
-Running Your Application
-------------------------
-
-Now, you can run the application locally.
-
-    $ foreman start
-
-You can also specify what port you'd prefer to use.
-
-    $ foreman start -p 5555
-
-
-Deploying
----------
-
-If you haven't [signed up for Heroku](https://api.heroku.com/signup), go
-ahead and do that. You should then be able to [add your SSH key to
-Heroku](http://devcenter.heroku.com/articles/quickstart), and also
-`heroku login` from the commandline.
-
-Now, to upload your application, you'll first need to do the
-following -- and obviously change `app_name` to the name of your
-application:
-
-    $ heroku create app_name -s cedar
-
-And, then you can push your application up to Heroku.
-
-    $ git push heroku master
-    $ heroku scale web=1
-
-Finally, we can make sure the application is up and running.
-
-    $ heroku ps
-
-Now, we can view the application in our web browser.
-
-    $ heroku open
-
-And, to deactivate `virtualenv` (once you've finished coding), you
-simply run the following command:
-
-    $ deactivate
-
-
-Next Steps
-----------
-
-After you've got your application up and running, there a couple next
-steps you should consider following.
-
-1. Create a new `README.md` file.
-2. Add your Google Analytics ID to the `base.html` template.
-3. Adjust the `author` and `description` `<meta>` tags in the
-   `base.html` template.
-4. Change the `humans.txt` and `favicon.ico` files in the `static`
-   directory.
-5. Change the `apple-touch` icons in the `static` directory.
-
-
-Reactivating the Virtual Environment
-------------------------------------
-
-If you haven't worked with `virtualenv` before, you'll need to
-reactivate the environment everytime you close or reload your terminal.
-
-    $ source env/bin/activate
-
-If you don't reactivate the environment, then you'll probably receive a
-screen full of errors when trying to run the application locally.
-
-
-Adding Requirements
--------------------
-
-In the course of creating your application, you may find yourself
-installing various Python modules with `pip` -- in which case you'll
-need to update the `requirements.txt` file. One way that this can be
-done is with `pip freeze`.
-
-    $ pip freeze > requirements.txt
-
-
-Custom Domains
---------------
-
-If your account is verified -- and your credit card is on file -- you
-can also easily add a custom domain to your application.
-
-    $ heroku addons:add custom_domains
-    $ heroku domains:add www.mydomainname.com
-
-You can add a [naked domain
-name](http://devcenter.heroku.com/articles/custom-domains), too.
-
-    $ heroku domains:add mydomainname.com
-
-Lastly, add the following A records to your DNS management tool.
-
-    75.101.163.44
-    75.101.145.87
-    174.129.212.2
