@@ -1,15 +1,19 @@
-from flask.views import MethodView
 import json
 
-from food_trucks.app import app, db
-from food_trucks.resources.base_resource import BaseResource
+from flask.views import MethodView
+
 from food_trucks.models.food_truck import FoodTruck
 
-class FoodTruckAPI(BaseResource):
+class FoodTruckAPI(MethodView):
 
     def get(self):
-=       food_trucks = FoodTruck.query.all()
-        return self._jsonify(food_trucks)
 
+        trucks = FoodTruck.query.all()
+        # return self._jsonify(food_trucks)
+        return 'foo!', 200
 
-app.add_url_rule('/food_trucks/', view_func=FoodTruckAPI.as_view('food_trucks'))
+    def _jsonify(self, rows):
+        output = []
+        for row in rows:
+            output.append(row.serialise)
+        return jsonify(items=output)

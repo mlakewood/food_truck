@@ -1,7 +1,7 @@
 from flask import Flask
 from sqlalchemy import Column, Integer, String, Float
 
-from food_trucks.app import Base
+from food_trucks.db import Base
 
 class FoodTruck(Base):
 
@@ -11,6 +11,7 @@ class FoodTruck(Base):
     name = Column(String(80), unique=True)
     lat = Column(Float())
     lng = Column(Float())
+    fooditems = Column(String(200))
 
     def __init__(self, name, lat, lng):
         self.name = name
