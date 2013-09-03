@@ -6,9 +6,10 @@ import os
 
 
 from food_trucks.app import my_app, define_urls
+from food_trucks.exceptions import InvalidUsage
 from food_trucks.db import get_engine, init_db, get_db_session, Base
 from food_trucks.models.food_truck import FoodTruck
-from food_trucks.resources.food_trucks_view import calculate_distance
+from food_trucks.resources.food_trucks_view import calculate_distance, verify_coords
 
 
 class TestFoodTruckGET(unittest.TestCase):
@@ -118,5 +119,39 @@ class TestHaversine(unittest.TestCase):
 
         self.assertEquals(calculate_distance(nashville, los_angeles), 1794.570151951225)
 
-        
+class TestVerifyCoords(unittest.TestCase):
 
+    def test_valid_coords(self):
+
+        lat = 89
+        lng = -120 
+
+        self.assertEquals(verify_coords(lat, lng), True)
+
+    def test_bad_lat_to_big(self):
+
+        lat = 100
+        lng = -120 
+
+        self.assertRaises(InvalidUsage, verify_coords, lat, lng)
+    
+    def test_bad_lat_to_small(self):
+
+        lat = -100
+        lng = -120 
+
+        self.assertRaises(InvalidUsage, verify_coords, lat, lng)
+
+    def test_bad_long_to_small(self):
+
+        lat = 80
+        lng = -1120 
+
+        self.assertRaises(InvalidUsage, verify_coords, lat, lng)
+
+    def test_bad_long_to_big(self):
+
+        lat = 80
+        lng = 1120 
+
+        self.assertRaises(InvalidUsage, verify_coords, lat, lng)

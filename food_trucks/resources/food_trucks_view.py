@@ -11,7 +11,6 @@ class FoodTruckAPI(BaseViewAPI):
     def get(self, truck_id=None):
         current_location = request.args.get('current_location', None)
         distance = request.args.get('distance', None)
-        
         if truck_id != None:
             trucks = self.db.query(FoodTruck).filter(FoodTruck.id == truck_id)
             if trucks.count() == 0:
@@ -21,6 +20,7 @@ class FoodTruckAPI(BaseViewAPI):
             filter_trucks = False
             if current_location != None and distance != None:
                 current_lat, current_long = current_location.split(',')
+                verify_coords(current_lat, current_long)
                 distance = int(distance)
                 filter_trucks = True
             trucks = self.db.query(FoodTruck).all()
@@ -32,7 +32,7 @@ class FoodTruckAPI(BaseViewAPI):
                 filtered_trucks = []
                 current_location = {"lat": float(current_lat), "long": float(current_long)}
                 for t in trucks:
-                    truck_location = {"lat": float(t.lat), "long": float(t.lng)} 
+                    truck_location = {"lat": float(t.lat), "long": float(t.lng)}
                     if calculate_distance(current_location, truck_location) < float(distance):
                         filtered_trucks.append(t)
                 trucks = filtered_trucks
@@ -42,7 +42,22 @@ class FoodTruckAPI(BaseViewAPI):
             
         return self._jsonify(trucks)
 
+def verify_coords(lat, lng):
+    """
+    Make sure the supplied coords are valid, if not raise an exception
+    """
+    min_lat = -90.0
+    max_lat = 90.0
 
+    min_long = -180.0
+    max_long = 180.0
+
+    if (float(lat) <= min_lat) or (float(lat) >= max_lat):
+        raise InvalidUsage('Latitude %s is outside the range of %s to %s' % (lat, min_lat, max_lat), status_code=400)
+       
+    if (float(lng) <= min_long) or (float(lng) >= max_long):
+        raise InvalidUsage('Longitude %s is outside the range of %s to %s' % (lng, min_long, max_long), status_code=400)        
+    return True
 
 def calculate_distance(point1, point2):
     """
