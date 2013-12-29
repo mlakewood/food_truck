@@ -1,0 +1,2 @@
+recursive-include food_trucks/static *
+recursive-include food_trucks/templates *

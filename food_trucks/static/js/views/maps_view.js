@@ -11,7 +11,7 @@ var mapsView = Backbone.View.extend({
         this.collection.once('sync', this.renderFoodTrucks);
 
         if((center !== undefined) && (distance !== undefined)){
-            center_location = center.ob + ',' + center.pb
+            center_location = center.lat() + ',' + center.lng();
             this.collection.fetch({ data: { current_location: center_location, distance: distance  },
                                     processData: true});
         }else{
